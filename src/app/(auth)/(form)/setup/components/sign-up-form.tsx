@@ -25,16 +25,16 @@ import {
 
 const formSchema = z
   .object({
-    name: z.string().min(1, "Nome é obrigatório").min(3, "Nome deve ter no mínimo 3 caracteres"),
-    email: z.string().min(1, "Email é obrigatório").email("Email inválido"),
+    name: z.string().min(1, "Name is required").min(3, "Name must be at least 3 characters"),
+    email: z.email("Invalid email address").min(1, "Email is required"),
     password: z
       .string()
-      .min(1, "Senha é obrigatória")
-      .min(8, "Senha deve ter no mínimo 8 caracteres"),
-    confirmPassword: z.string().min(1, "Confirmação de senha é obrigatória"),
+      .min(1, "Password is required")
+      .min(8, "Password must be at least 8 characters"),
+    confirmPassword: z.string().min(1, "Confirm Password is required"),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Senhas não conferem",
+    message: "Passwords do not match",
     path: ["confirmPassword"],
   });
 
@@ -64,7 +64,7 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
       const response = await axios.post("/api/signup", data);
 
       if (response.status === 201) {
-        toast.success("Conta criada com sucesso! Faça login para continuar.");
+        toast.success("Account created successfully! You can now log in.");
 
         setTimeout(() => {
           setIsLoading(false);
@@ -75,9 +75,9 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
       setIsLoading(false);
 
       if (axios.isAxiosError(error) && error.response?.status === 409) {
-        form.setError("email", { message: "Email já está em uso" });
+        form.setError("email", { message: "Email is already in use" });
       } else {
-        toast.error("Não foi possível criar sua conta. Tente novamente mais tarde.");
+        toast.error("Something went wrong. Please try again.");
       }
     }
   }
@@ -92,9 +92,9 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="sr-only">Nome</FormLabel>
+                  <FormLabel className="sr-only">Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Nome" disabled={isLoading} {...field} />
+                    <Input placeholder="Name" disabled={isLoading} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -120,9 +120,9 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="sr-only">Senha</FormLabel>
+                  <FormLabel className="sr-only">Password</FormLabel>
                   <FormControl>
-                    <PasswordInput placeholder="Senha" disabled={isLoading} {...field} />
+                    <PasswordInput placeholder="Password" disabled={isLoading} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -134,9 +134,9 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
               name="confirmPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="sr-only">Confirmar senha</FormLabel>
+                  <FormLabel className="sr-only">Confirm password</FormLabel>
                   <FormControl>
-                    <PasswordInput placeholder="Confirmar senha" disabled={isLoading} {...field} />
+                    <PasswordInput placeholder="Confirm password" disabled={isLoading} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -145,7 +145,7 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
 
             <Button disabled={isLoading} className="mt-1">
               {isLoading && <SpinnerIcon className="mr-2 w-4 h-4 animate-spin" />}
-              Criar conta
+              Create Account
             </Button>
           </div>
         </form>

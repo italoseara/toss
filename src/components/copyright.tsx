@@ -14,13 +14,13 @@ export function Copyright({ className, ...props }: React.HTMLProps<HTMLDivElemen
       {...props}
     >
       <p>
-        © {year} Todos os direitos reservados
+        © {year} All rights reserved
         <span className="mx-1">•</span>
         Toss
       </p>
 
       <p>
-        Feito com <PulsingHeart /> por{" "}
+        Made with <PulsingHeart /> by{" "}
         <Link href="https://github.com/italoseara" className="link">
           Italo Seara
         </Link>

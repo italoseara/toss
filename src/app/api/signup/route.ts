@@ -5,12 +5,12 @@ import bcrypt from "bcrypt";
 import prisma from "@/lib/prisma";
 
 const userSchema = z.object({
-  name: z.string().min(1, "Nome é obrigatório"),
-  email: z.email("Email inválido").min(1, "Email é obrigatório"),
+  name: z.string().min(1, "Name is required"),
+  email: z.email("Invalid email").min(1, "Email is required"),
   password: z
     .string()
-    .min(1, "Senha é obrigatória")
-    .min(8, "Senha deve ter no mínimo 8 caracteres"),
+    .min(1, "Password is required")
+    .min(8, "Password must be at least 8 characters long"),
 });
 
 export async function POST(request: Request) {

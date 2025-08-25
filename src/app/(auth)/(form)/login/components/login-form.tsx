@@ -25,11 +25,11 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { SpinnerIcon } from "@/components/icons";
 
 const formSchema = z.object({
-  email: z.email("Email inválido").min(1, "Email é obrigatório"),
+  email: z.email("Invalid email").min(1, "Email is required"),
   password: z
     .string()
-    .min(1, "Senha é obrigatória")
-    .min(8, "Senha deve ter no mínimo 8 caracteres"),
+    .min(1, "Password is required")
+    .min(8, "Password must be at least 8 characters long"),
 });
 
 type LoginFormValues = z.infer<typeof formSchema>;
@@ -55,12 +55,12 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
     });
 
     if (signInData?.error) {
-      toast.error("Email ou senha inválidos");
+      toast.error("Invalid email or password");
       setIsLoading(false);
       return;
     }
 
-    toast.success("Login efetuado com sucesso");
+    toast.success("Successfully logged in");
 
     setTimeout(() => {
       setIsLoading(false);
@@ -92,9 +92,9 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="sr-only">Senha</FormLabel>
+                  <FormLabel className="sr-only">Password</FormLabel>
                   <FormControl>
-                    <PasswordInput placeholder="Senha" disabled={isLoading} {...field} />
+                    <PasswordInput placeholder="Password" disabled={isLoading} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -102,12 +102,12 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
             />
 
             <p className="-mt-1 text-muted-foreground text-sm text-right">
-              <Link href="/forgot-password">Esqueci minha senha</Link>
+              <Link href="/forgot-password">Forgot my password</Link>
             </p>
 
             <Button disabled={isLoading} className="mt-1" type="submit">
               {isLoading && <SpinnerIcon className="mr-2 w-4 h-4 animate-spin" />}
-              Entrar na minha conta
+              Login to my account
             </Button>
           </div>
         </form>
