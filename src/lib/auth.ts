@@ -12,6 +12,10 @@ export const authOptions: AuthOptions = {
   },
   pages: {
     signIn: "/login",
+    newUser: "/setup",
+    signOut: "/404",
+    error: "/404",
+    verifyRequest: "/404",
   },
   providers: [
     CredentialsProvider({
