@@ -1,6 +1,9 @@
-"use client";
-
 import { SignUpForm } from "./components/sign-up-form";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Setup",
+};
 
 export default function SignupPage() {
   return (

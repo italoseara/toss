@@ -1,6 +1,7 @@
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Roboto, Roboto_Mono } from "next/font/google";
+import { ModeToggle } from "@/components/mode-toggle";
 
 import "@/css/globals.css";
 export { metadata } from "@/config/seo";
@@ -23,6 +24,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body className={`${robotoSans.variable} ${robotoMono.variable} antialiased`}>
         <ServerSessionProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <div className="top-0 left-0 absolute m-6">
+              <ModeToggle variant="ghost" />
+            </div>
             {children}
             <Toaster />
           </ThemeProvider>
