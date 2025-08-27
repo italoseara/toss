@@ -21,8 +21,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
-      <body className={`${robotoSans.variable} ${robotoMono.variable} antialiased`}>
-        <ServerSessionProvider>
+      <body className={`${robotoSans.variable} ${robotoMono.variable} antialiased relative h-screen`}>
+        <ServerSessionProvider refetchOnWindowFocus={false}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <div className="top-0 left-0 absolute m-6">
               <ModeToggle variant="ghost" />

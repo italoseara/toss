@@ -3,6 +3,8 @@ import bcrypt from "bcrypt";
 import { z } from "zod";
 
 import prisma from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 const userSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -15,6 +17,12 @@ const userSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
+    const users = await prisma.user.count();
+    const session = await getServerSession(authOptions);
+    if (!session && users > 0) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
     const body = await request.json();
     const { name, email, password } = userSchema.parse(body);
 

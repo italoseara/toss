@@ -1,8 +1,16 @@
 "use client";
 
-import { useSession } from "next-auth/react";
-import { User2 } from "lucide-react";
+import { signOut, useSession } from "next-auth/react";
+import { User2, LogOut } from "lucide-react";
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -24,12 +32,24 @@ export default function User({ className }: React.HTMLAttributes<HTMLDivElement>
   const { name, email } = data?.user || {};
 
   return (
-    <div className={cn("flex items-center gap-3 mt-5", className)}>
-      <div className="text-end">
-        <p className="font-medium">{name}</p>
-        <p className="text-muted-foreground text-sm">{email}</p>
-      </div>
-      <User2 className="bg-muted p-1.5 rounded-full w-10 h-10" />
-    </div>
+    <DropdownMenu>
+      <DropdownMenuTrigger className={cn("cursor-pointer", className)}>
+        <div className="flex items-center gap-3">
+          <div className="text-end">
+            <p className="font-medium">{name}</p>
+            <p className="text-muted-foreground text-sm">{email}</p>
+          </div>
+          <User2 className="bg-muted p-1.5 rounded-full w-10 h-10" />
+        </div>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="border-none min-w-36">
+        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => signOut()}>
+          <LogOut className="w-4 h-4 text-destructive" />
+          <span className="text-destructive">Logout</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

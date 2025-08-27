@@ -64,7 +64,9 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
 
     setTimeout(() => {
       setIsLoading(false);
-      router.push("/");
+
+      const callbackUrl = new URL(window.location.href).searchParams.get("callbackUrl");
+      router.push(callbackUrl || "/");
     }, 1000);
   }
 

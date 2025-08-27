@@ -1,27 +1,31 @@
-import { SignUpForm } from "./components/sign-up-form";
 import type { Metadata } from "next";
+
+import { SignUpForm } from "./components/sign-up-form";
+import { redirect } from "next/navigation";
+import prisma from "@/lib/prisma";
 
 export const metadata: Metadata = {
   title: "Setup",
 };
 
-export default function SignupPage() {
+export default async function SignupPage() {
+  const users = await prisma.user.count();
+  if (users > 0) redirect("/login");
+
   return (
-    <>
-      <div className="flex flex-col justify-center space-y-6 mx-auto w-full sm:w-[350px]">
-        <div className="flex flex-col space-y-2 text-center">
-          <h1 className="font-semibold text-2xl tracking-tight">Setup admin account</h1>
-          <p className="text-muted-foreground text-sm">
-            Fill the fields below to create your account.
-          </p>
-        </div>
-
-        <SignUpForm />
-
-        <p className="px-8 text-muted-foreground text-sm text-center">
-          This form only appears once, the created account will be the administrator account.
+    <div className="flex flex-col justify-center space-y-6 mx-auto w-full sm:w-[350px]">
+      <div className="flex flex-col space-y-2 text-center">
+        <h1 className="font-semibold text-2xl tracking-tight">Setup admin account</h1>
+        <p className="text-muted-foreground text-sm">
+          Fill the fields below to create your account.
         </p>
       </div>
-    </>
+
+      <SignUpForm />
+
+      <p className="px-8 text-muted-foreground text-sm text-center">
+        This form only appears once, the created account will be the administrator account.
+      </p>
+    </div>
   );
 }
