@@ -2,6 +2,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Roboto, Roboto_Mono } from "next/font/google";
 import { ModeToggle } from "@/components/mode-toggle";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 import "@/css/globals.css";
 export { metadata } from "@/config/seo";
@@ -21,13 +22,15 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
-      <body className={`${robotoSans.variable} ${robotoMono.variable} antialiased relative h-screen`}>
+      <body
+        className={`${robotoSans.variable} ${robotoMono.variable} antialiased relative h-screen`}
+      >
         <ServerSessionProvider refetchOnWindowFocus={false}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <div className="top-0 left-0 absolute m-6">
+            <div className="top-0 left-0 fixed m-6">
               <ModeToggle variant="ghost" />
             </div>
-            {children}
+            <ScrollArea className="h-screen">{children}</ScrollArea>
             <Toaster />
           </ThemeProvider>
         </ServerSessionProvider>

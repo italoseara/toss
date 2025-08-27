@@ -18,7 +18,7 @@ export default function Home() {
 
   return (
     <div className="mx-5 md:mx-auto pt-32 md:w-3/5">
-      <User className="top-0 right-0 absolute m-6" />
+      <User className="top-0 right-0 fixed m-6" />
 
       <h1 className="flex items-center gap-3">
         <LogoIcon className="w-10 h-10" />
