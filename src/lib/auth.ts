@@ -4,6 +4,16 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "./prisma";
 import bcrypt from "bcrypt";
 
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id: string;
+      name?: string | null;
+      email?: string | null;
+    };
+  }
+}
+
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
   secret: process.env.NEXTAUTH_SECRET,
@@ -45,4 +55,10 @@ export const authOptions: AuthOptions = {
       },
     }),
   ],
+  callbacks: {
+    async session({ session, token }) {
+      session.user.id = token.sub!;
+      return session;
+    },
+  },
 };

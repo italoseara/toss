@@ -27,7 +27,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       >
         <ServerSessionProvider refetchOnWindowFocus={false}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <div className="top-0 left-0 fixed m-6">
+            <div className="top-0 left-0 z-10 fixed m-6">
               <ModeToggle variant="ghost" />
             </div>
             <ScrollArea className="h-screen">{children}</ScrollArea>

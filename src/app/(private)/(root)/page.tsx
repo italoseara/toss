@@ -1,19 +1,52 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "sonner";
 
-import { formatBytes } from "@/lib/utils";
 import { LogoIcon } from "@/components/icons";
-import UploadDialog from "./components/upload-dialog";
+import { createFormData, createZipFile, formatBytes } from "@/lib/utils";
+import { UploadFormValues, UploadDialog } from "./components/upload-dialog";
 import Dropzone from "./components/dropzone";
 import FileList from "./components/file-list";
 import User from "./components/user";
+import axios from "axios";
 
 export default function Home() {
   const [files, setFiles] = useState<File[]>([]);
 
-  const onSubmit = (e: React.FormEvent) => {
-    console.log("Form submitted");
+  const onSubmit = async (data: UploadFormValues) => {
+    const { expiresIn, password } = data;
+    if (files.length === 0) return;
+
+    const file = await createZipFile(files, "files.zip");
+
+    const uploadFiles = async () => {
+      const formData = createFormData({ file, expiresIn, password });
+      const response = await axios.post("/api/file/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      return response.data;
+    };
+
+    try {
+      toast.promise(
+        uploadFiles().then((data) => {
+          const url = `${window.location.origin}/file/${data.fileId}`;
+          navigator.clipboard.writeText(url);
+          setFiles([]);
+          return data;
+        }),
+        {
+          loading: "Uploading files...",
+          success: "Files uploaded successfully!.",
+          error: "Failed to upload files.",
+        }
+      );
+    } catch (error) {
+      console.error("Upload error:", error);
+      toast.error("An unexpected error occurred during upload.");
+    }
   };
 
   return (

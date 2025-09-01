@@ -7,12 +7,9 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
 const userSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  email: z.email("Invalid email").min(1, "Email is required"),
-  password: z
-    .string()
-    .min(1, "Password is required")
-    .min(8, "Password must be at least 8 characters long"),
+  name: z.string().min(1),
+  email: z.email().min(1),
+  password: z.string().min(1).min(8),
 });
 
 export async function POST(request: NextRequest) {

@@ -21,4 +21,17 @@ model User {
   name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  files     File[]
+}
+
+model File {
+  id        String   @id @default(cuid())
+  password  String?
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
 }

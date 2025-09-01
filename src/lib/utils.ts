@@ -1,5 +1,6 @@
-import { clsx, type ClassValue } from "clsx";
+import JSZip from "jszip";
 import { twMerge } from "tailwind-merge";
+import { clsx, type ClassValue } from "clsx";
 
 import {
   ImageIcon,
@@ -43,4 +44,40 @@ export function getFileIcon(fileType: string) {
     FileIcon;
 
   return Icon;
+}
+
+export async function createZipFile(files: File[], zipFileName: string): Promise<File> {
+  const zip = new JSZip();
+
+  // Add each File object to the zip archive
+  for (const file of files) {
+    zip.file(file.name, file); // Add file content with its original name
+  }
+
+  // Generate the zip file content as a Blob
+  const content = await zip.generateAsync({ type: "blob" });
+
+  // Create a new File object from the Blob
+  return new File([content], zipFileName, { type: "application/zip" });
+}
+
+export function downloadFile(file: Blob, fileName: string) {
+  const url = URL.createObjectURL(file);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+export function createFormData(object: Record<string, any>): FormData {
+  const formData = new FormData();
+  Object.entries(object).forEach(([key, value]) => {
+    if (value !== undefined && value !== null) {
+      formData.append(key, value);
+    }
+  });
+  return formData;
 }
