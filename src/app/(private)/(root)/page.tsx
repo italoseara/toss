@@ -2,17 +2,20 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
-
-import { LogoIcon } from "@/components/icons";
-import { createFormData, createZipFile, formatBytes } from "@/lib/utils";
-import { UploadFormValues, UploadDialog } from "./components/upload-dialog";
-import Dropzone from "./components/dropzone";
-import FileList from "./components/file-list";
-import User from "./components/user";
 import axios from "axios";
+
+import { UploadFormValues, UploadDialog } from "./components/upload-dialog";
+import { createFormData, createZipFile, formatBytes } from "@/lib/utils";
+import { LogoIcon } from "@/components/icons";
+import CopyDialog from "./components/copy-dialog";
+import FileList from "./components/file-list";
+import Dropzone from "./components/dropzone";
+import User from "./components/user";
 
 export default function Home() {
   const [files, setFiles] = useState<File[]>([]);
+  const [isCopyDialogOpen, setIsCopyDialogOpen] = useState(false);
+  const [url, setUrl] = useState("");
 
   const onSubmit = async (data: UploadFormValues) => {
     const { expiresIn, password } = data;
@@ -32,8 +35,8 @@ export default function Home() {
     try {
       toast.promise(
         uploadFiles().then((data) => {
-          const url = `${window.location.origin}/file/${data.fileId}`;
-          navigator.clipboard.writeText(url);
+          setUrl(`${window.location.origin}/file/${data.fileId}`);
+          setIsCopyDialogOpen(true);
           setFiles([]);
           return data;
         }),
@@ -66,6 +69,7 @@ export default function Home() {
       <div className="flex justify-between items-center my-4">
         <h2 className="font-semibold text-lg">Files to be uploaded:</h2>
         <UploadDialog files={files} onSubmit={onSubmit} />
+        <CopyDialog open={isCopyDialogOpen} onOpenChange={setIsCopyDialogOpen} url={url} />
       </div>
 
       <FileList files={files} setFiles={setFiles} />
