@@ -1,12 +1,25 @@
 "use client";
 
+import { z } from "zod";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { LockKeyholeIcon, ForwardIcon } from "lucide-react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 
 import { Dialog, DialogPortal } from "@/components/ui/dialog";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  FormControl,
+} from "@/components/ui/form";
 
 function PasswordDialogOverlay({
   className,
@@ -44,12 +57,49 @@ function PasswordDialogContent({
   );
 }
 
+const formSchema = z.object({
+  password: z
+    .string()
+    .min(1, "Password is required")
+    .min(8, "Password must be at least 8 characters"),
+});
+
+export type PasswordFormValues = z.infer<typeof formSchema>;
+
 interface PasswordDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onSubmit: (password: string) => Promise<void>;
 }
 
-export default function PasswordDialog({ open, onOpenChange }: PasswordDialogProps) {
+export default function PasswordDialog({ open, onOpenChange, onSubmit }: PasswordDialogProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const form = useForm<PasswordFormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      password: "",
+    },
+  });
+
+  const handleSubmit = async (values: PasswordFormValues) => {
+    setIsSubmitting(true);
+
+    try {
+      await onSubmit(values.password);
+      onOpenChange(false);
+      form.reset();
+    } catch (error: any) {
+      if (error.response?.status === 403) {
+        form.setError("password", { message: "Incorrect password." });
+        return;
+      }
+
+      toast.error("An error occurred. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const disabledClose = (event: Event) => {
     event.preventDefault();
   };
@@ -61,21 +111,43 @@ export default function PasswordDialog({ open, onOpenChange }: PasswordDialogPro
         <PasswordDialogContent onEscapeKeyDown={disabledClose} onPointerDownOutside={disabledClose}>
           <DialogPrimitive.Title className="sr-only">Password Required</DialogPrimitive.Title>
 
-          <div className="flex flex-col justify-center items-center">
-            <LockKeyholeIcon className="mb-4 w-32 h-32 text-muted-foreground" />
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col gap-6 p-6">
+              <div className="flex flex-col justify-center items-center">
+                <LockKeyholeIcon className="mb-4 w-32 h-32 text-muted-foreground" />
 
-            <div className="mb-6 text-center">
-              <h1 className="font-semibold text-2xl">This file is password protected</h1>
-              <p className="text-muted-foreground">Please enter the password to proceed</p>
-            </div>
+                <div className="mb-6 text-center">
+                  <h1 className="font-semibold text-2xl">This file is password protected</h1>
+                  <p className="text-muted-foreground">Please enter the password to proceed</p>
+                </div>
 
-            <div className="flex items-center gap-1">
-              <PasswordInput placeholder="Enter password" className="w-64" />
-              <Button type="button" onClick={() => onOpenChange(false)}>
-                <ForwardIcon />
-              </Button>
-            </div>
-          </div>
+                <div className="flex gap-1">
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="sr-only">Password</FormLabel>
+                        <FormControl>
+                          <PasswordInput
+                            placeholder="Enter password"
+                            autoFocus
+                            {...field}
+                            disabled={isSubmitting}
+                            className="w-64"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button type="submit" disabled={isSubmitting}>
+                    <ForwardIcon />
+                  </Button>
+                </div>
+              </div>
+            </form>
+          </Form>
         </PasswordDialogContent>
       </DialogPortal>
     </Dialog>

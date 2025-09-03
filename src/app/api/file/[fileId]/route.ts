@@ -24,12 +24,6 @@ export async function GET(
   const { fileId } = await params;
   const password = request.nextUrl.searchParams.get("password") || "";
 
-  console.log(
-    "Received download request for fileId:",
-    fileId,
-    password ? "with password" : "without password"
-  );
-
   // Validate query parameters
   let parsedData;
   try {

@@ -81,3 +81,21 @@ export function createFormData(object: Record<string, any>): FormData {
   });
   return formData;
 }
+
+export async function blobToJson(blob: Blob): Promise<any> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const json = JSON.parse(reader.result as string);
+        resolve(json);
+      } catch (error) {
+        reject(error);
+      }
+    };
+    reader.onerror = () => {
+      reject(reader.error);
+    };
+    reader.readAsText(blob);
+  });
+}
