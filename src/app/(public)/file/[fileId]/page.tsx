@@ -12,8 +12,9 @@ import PasswordDialog from "./components/password-dialog";
 export default function FilePage() {
   const { fileId } = useParams<{ fileId: string }>()!;
 
-  const [isDownloading, setIsDownloading] = useState(true);
   const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(true);
+  const [fileNotFound, setFileNotFound] = useState(false);
 
   const fetchFile = async (fileId: string, password?: string) => {
     const url = `/api/file/${fileId}${password ? `?password=${password}` : ""}`;
@@ -37,6 +38,11 @@ export default function FilePage() {
 
       if (status === 401) {
         setIsPasswordDialogOpen(true);
+        return;
+      }
+
+      if (status === 404) {
+        setFileNotFound(true);
         return;
       }
 
@@ -64,10 +70,16 @@ export default function FilePage() {
           ID: <code className="font-mono font-bold">{fileId}</code>
         </p>
         <p className="mt-4 font-semibold text-2xl">
-          {isDownloading ? "Downloading..." : "Download has started!"}
+          {fileNotFound
+            ? "File not found"
+            : isDownloading
+            ? "Downloading..."
+            : "Download has started!"}
         </p>
         <p className="mt-2 w-96 text-muted-foreground text-center">
-          {isDownloading
+          {fileNotFound
+            ? "The file you are looking for does not exist or has expired."
+            : isDownloading
             ? "Please wait while we prepare your download."
             : "If your download doesn't start automatically, please refresh the page."}
         </p>

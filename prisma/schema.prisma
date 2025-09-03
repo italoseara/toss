@@ -28,7 +28,7 @@ model User {
 model File {
   id        String   @id @default(cuid())
   password  String?
-  expiresAt DateTime
+  expiresAt DateTime?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

@@ -9,6 +9,8 @@ import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
+import "@/lib/cleanup"; // Ensure cleanup task is initialized
+
 const uploadSchema = z.object({
   file: z.instanceof(File),
   password: z
@@ -56,7 +58,7 @@ export async function POST(request: NextRequest) {
 
   const fileId = cuid();
   const filePath = path.join(UPLOAD_DIR, fileId + ".zip");
-  const expiresAt = new Date(Date.now() + expiresIn * 1000);
+  const expiresAt = expiresIn > 0 ? new Date(Date.now() + expiresIn * 1000) : null;
 
   // Save file to disk
   try {

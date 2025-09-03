@@ -92,6 +92,7 @@ export function UploadDialog({ files, onSubmit }: UploadDialogProps) {
                         <SelectValue placeholder="Select expiration" />
                       </SelectTrigger>
                       <SelectContent>
+                        <SelectItem value="30">30 seconds</SelectItem>
                         <SelectItem value="3600">1 hour</SelectItem>
                         <SelectItem value="86400">1 day</SelectItem>
                         <SelectItem value="604800">7 days</SelectItem>
